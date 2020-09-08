@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "File Upload";
+    string result = (string)TempData["Result"];
+    string fileLocation = (string)TempData["Location"];
+}
+
+<div class="upload-container">
+    <h1 class="mb-5">Upload file</h1>
+
+    <form asp-action="OnPost" 
+          method="post"
+          enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <br />
+        <input class="button" type="submit" value="Upload and Edit" />
+    </form>
+
+    @if (!string.IsNullOrEmpty(result))
+    {
+        <p class="mt-3">
+            @result
+        </p>
+    }
+    @if (!string.IsNullOrEmpty(fileLocation))
+    {
+        <p>File located at: <a href="">@fileLocation</a></p>
+    }
+</div>
