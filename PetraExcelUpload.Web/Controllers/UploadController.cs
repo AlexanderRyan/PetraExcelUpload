@@ -16,15 +16,12 @@ namespace PetraExcelUpload.Web.Controllers
     {
         private readonly string[] permittedExtensions = {".xls", ".xlsx"};
         private readonly string targetFilepath;
-        private readonly string convertedFilepath;
-        private static readonly byte[] XML = { 60, 63, 120, 109, 108, 32 };
         private readonly ILogger<UploadController> logger;
         private int updatedRows;
 
         public UploadController(IConfiguration config, ILogger<UploadController> logger)
         {
             targetFilepath = config.GetValue<string>("StoredFilesPath");
-            convertedFilepath = config.GetValue<string>("ConvertedFilesPath");
             this.logger = logger;
         }
 
@@ -53,15 +50,6 @@ namespace PetraExcelUpload.Web.Controllers
 
             var filePath = Path.Combine(targetFilepath, file.FileName);
 
-            // Get the file signature
-            byte[] fileBytes;
-            using (var ms = new MemoryStream())
-            {
-                await file.CopyToAsync(ms);
-                fileBytes = ms.ToArray();
-                ms.Close();
-            }
-
             System.IO.Directory.CreateDirectory(targetFilepath);
 
             using (Stream stream = System.IO.File.Create(filePath))
@@ -69,34 +57,7 @@ namespace PetraExcelUpload.Web.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            // Check if file is raw XML by comparing file signature to XML file sig.
-            if (fileBytes.Take(6).SequenceEqual(XML))
-            {
-                var app = new Microsoft.Office.Interop.Excel.Application();
-                var wb = app.Workbooks.Open(Path.GetFullPath(filePath));
-                string convertedFilePath = "";
-
-                try
-                {
-                    wb.SaveAs(Filename: file.FileName + "x", 
-                              FileFormat: Microsoft.Office.Interop.Excel.XlFileFormat.xlOpenXMLWorkbook);
-
-                    convertedFilePath = Path.Combine(wb.Path, file.FileName + "x");
-                }
-                catch (Exception e)
-                {
-                    logger.LogError(e.ToString());
-                }
-                finally
-                {
-                    wb.Close();
-                    app.Quit();
-                }
-
-                EditExcel(convertedFilePath);
-            }
-            else
-                EditExcel(filePath);
+            EditExcel(filePath);
 
             TempData["Result"] = $"File successfully edited. {updatedRows} rows were edited.";
             TempData["Location"] = $"{Path.GetFullPath(filePath)}";

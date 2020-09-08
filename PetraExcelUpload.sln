@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetraExcelUpload.Web", "PetraExcelUpload.Web\PetraExcelUpload.Web.csproj", "{7E405767-856B-401D-8E7E-B765E8E91453}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetraExcelUpload.COMRefs", "PetraExcelUpload.COMRefs\PetraExcelUpload.COMRefs.csproj", "{724DFC18-9375-4593-ACE8-CAA0E940282E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{7E405767-856B-401D-8E7E-B765E8E91453}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E405767-856B-401D-8E7E-B765E8E91453}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E405767-856B-401D-8E7E-B765E8E91453}.Release|Any CPU.Build.0 = Release|Any CPU
-		{724DFC18-9375-4593-ACE8-CAA0E940282E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{724DFC18-9375-4593-ACE8-CAA0E940282E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{724DFC18-9375-4593-ACE8-CAA0E940282E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{724DFC18-9375-4593-ACE8-CAA0E940282E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
