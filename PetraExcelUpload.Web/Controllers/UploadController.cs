@@ -120,7 +120,9 @@ namespace PetraExcelUpload.Web.Controllers
             }
             
             ISheet sheet = workbook.GetSheetAt(0);
-            int rowCount = sheet.LastRowNum; //? Not being used currently?
+            
+            //? Not being used currently?
+            //int rowCount = sheet.LastRowNum; 
 
             int hourColIndex = 0; //! Stores the index of the column with "Timmar"
             bool colFound = false;
@@ -153,27 +155,45 @@ namespace PetraExcelUpload.Web.Controllers
 
                 if (cell.ToString().Contains(';'))
                 {
-                    //? Maybe change code to split the cells text into array here incase more than one semi-colon occurs.
-                    //? Create one new row per length of the array to enable multiple new entries instead of only 2.
-                    //todo for-loop i< splitArrayn.length, copy newRow to row+1
-
-                    row.CopyRowTo(row.RowNum + 1);
-                    IRow newRow = sheet.GetRow(row.RowNum + 1);
-                    updatedRows++;
-
                     for (int j = cell.ColumnIndex; j < row.LastCellNum; j++)
                     {
-                        var splitValue = row.GetCell(j).ToString().Split(';');
+                        var splitCellValues = row.GetCell(j).ToString().Split(";");
 
-                        row.GetCell(j).SetCellValue(splitValue[0]);
-                        newRow.GetCell(j).SetCellValue(splitValue[1].TrimStart());
+                        if (j == cell.ColumnIndex) //! If cell is "EXTERN NOTERING" - Kopiera nya rader och uppdatera antal nya rader
+                        {
+                            for (int k = 1; k < splitCellValues.Length; k++)
+                            {
+                                row.CopyRowTo(row.RowNum + k);
+                                updatedRows++;
+                                i++; //! No need to check newly added rows, should already be formatted correctly.
+                            }
 
-                        //! Get the estimated hours for each activity and update the Hour column for each changed row.
-                        double rowUpdatedHour = Convert.ToDouble(splitValue[0].Remove(0, splitValue[0].Length - 6).Replace("(","").Replace(")",""));
-                        double newRowUpdatedHour = Convert.ToDouble(splitValue[1].Remove(0, splitValue[1].Length - 6).Replace("(", "").Replace(")", ""));
+                            double rowUpdatedHour = Convert.ToDouble(splitCellValues[0]
+                                .Remove(0, splitCellValues[0].Length - 6).Replace("(", "").Replace(")", ""));
 
-                        row.GetCell(hourColIndex).SetCellValue(rowUpdatedHour);
-                        newRow.GetCell(hourColIndex).SetCellValue(newRowUpdatedHour);
+                            row.GetCell(j).SetCellValue(splitCellValues[0]); //! Updates the orignal cell to desired content.
+                            row.GetCell(hourColIndex).SetCellValue(rowUpdatedHour); //! Updates original cells Hour-Column
+
+                            //! Loop sets the added rows content and their Hour-Column
+                            for (int k = 1; k < splitCellValues.Length; k++)
+                            {
+                                IRow newRow = sheet.GetRow(row.RowNum + k);
+                                rowUpdatedHour = Convert.ToDouble(splitCellValues[k].Remove(0, splitCellValues[k].Length - 6).Replace("(", "").Replace(")", ""));
+
+                                newRow.GetCell(j).SetCellValue(splitCellValues[k].TrimStart());
+                                newRow.GetCell(hourColIndex).SetCellValue(rowUpdatedHour);
+                            }
+                        }
+                        else //! If cell is NOT "EXTERN NOTERING", it will be "INTERN NOTERING" - Only set new cell content
+                        {
+                            row.GetCell(j).SetCellValue(splitCellValues[0]); //! Updates the orignal cell to desired content.
+
+                            for (int k = 1; k < splitCellValues.Length; k++)
+                            {
+                                IRow newRow = sheet.GetRow(row.RowNum + k);
+                                newRow.GetCell(j).SetCellValue(splitCellValues[k].TrimStart());
+                            }
+                        }
                     }
                 }
             }
