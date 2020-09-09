@@ -1,19 +1,24 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "File Upload";
     string result = (string)TempData["Result"];
     string fileLocation = (string)TempData["Location"];
 }
 
 <div class="upload-container">
-    <h1 class="mb-5">Upload file</h1>
+    <h1 class="mb-5">Upload Excel File</h1>
 
-    <form asp-action="OnPost" 
+    <form asp-action="OnPost"
           method="post"
           enctype="multipart/form-data">
-        <input type="file" name="file" />
+        @*<input type="file" name="file" />*@
+        <div class="input-group mb-3">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name="file" id="excel-upload">
+                <label class="custom-file-label" for="excel-upload">Choose file</label>
+            </div>
+        </div>
         <br />
-        <input class="button" type="submit" value="Upload and Edit" />
+        <input class="button btn btn-lg btn-secondary" type="submit" value="Upload and Edit" />
     </form>
 
     @if (!string.IsNullOrEmpty(result))
@@ -27,3 +32,14 @@
         <p>File located at: <a href="">@fileLocation</a></p>
     }
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(() => {
+            $('input[type="file"]').change(function (e) {
+                var fileName = e.target.files[0].name;
+                $('.custom-file-label').text(fileName);
+            });
+        });
+    </script>
+}
