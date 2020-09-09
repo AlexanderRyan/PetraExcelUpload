@@ -81,9 +81,6 @@ namespace PetraExcelUpload.Web.Controllers
             }
             
             ISheet sheet = workbook.GetSheetAt(0);
-            
-            //? Not being used currently?
-            //int rowCount = sheet.LastRowNum; 
 
             int hourColIndex = 0; //! Stores the index of the column with "Timmar"
             bool colFound = false;
