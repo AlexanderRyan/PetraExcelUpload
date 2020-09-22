@@ -127,7 +127,7 @@ namespace PetraExcelUpload.Web.Controllers
 
                 UploadToBlobStorage("petra-excel", ViewModel.File.FileName, filePath);
             }
-            System.Threading.Thread.Sleep(5500); //? Ugly solution - Azure function doesnt finish before page reloads resulting in Downloads displaying no files uploaded.
+            System.Threading.Thread.Sleep(8000); //? Ugly solution - Azure function doesnt finish before page reloads resulting in Downloads displaying no files uploaded.
             return RedirectToAction("Download", "Download");
         }
 
