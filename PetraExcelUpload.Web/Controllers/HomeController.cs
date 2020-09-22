@@ -128,7 +128,7 @@ namespace PetraExcelUpload.Web.Controllers
                 UploadToBlobStorage("petra-excel", ViewModel.File.FileName, filePath);
             }
             System.Threading.Thread.Sleep(8000); //? Ugly solution - Azure function doesnt finish before page reloads resulting in Downloads displaying no files uploaded.
-            return RedirectToAction("Download", "Download");
+            return RedirectToAction("Index", "Download");
         }
 
         private void UploadToBlobStorage(string cntName, string fileName, string filePath)
