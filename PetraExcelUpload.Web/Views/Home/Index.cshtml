@@ -1,0 +1,29 @@
+﻿@model FileUploadViewModel
+@{
+    ViewData["Title"] = "File Upload";
+}
+
+<div class="upload-container">
+    <h1 class="mb-5">Upload Excel File</h1>
+
+    <form id="upload-form" asp-action="OnPost"
+          method="post"
+          enctype="multipart/form-data">
+        <div class="input-group mb-3">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" asp-for="@Model.File" id="excel-upload">
+                <label class="custom-file-label" for="excel-upload">Choose file</label>
+            </div>
+        </div>
+        <br />
+        <button id="upload_btn" class="btn btn-secondary" type="submit">Upload &amp; Edit</button>
+    </form>
+
+
+    @if (!string.IsNullOrEmpty(Model.Result))
+    {
+        <p class="mt-3 lead">
+            @Model.Result
+        </p>
+    }
+</div>
