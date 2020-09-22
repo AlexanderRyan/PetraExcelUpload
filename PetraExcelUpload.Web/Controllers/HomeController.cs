@@ -39,36 +39,6 @@ namespace PetraExcelUpload.Web.Controllers
             return View(ViewModel);
         }
 
-        public async Task<IActionResult> Download()
-        {
-            string accessKey = Config.GetConnectionString("AccessKey");
-            BlobContainerClient container = new BlobContainerClient(accessKey, "petra-excel");
-
-            DownloadFileViewModel downloadFileVM = new DownloadFileViewModel();
-
-            await foreach (var item in container.GetBlobsAsync(prefix: "downloads/"))
-            {
-                BlobFileViewModel blob = new BlobFileViewModel
-                {
-                    File = item,
-                    Url = container.Uri.AbsoluteUri + "/" + item.Name
-                };
-                downloadFileVM.BlobFiles.Add(blob);
-            }
-
-            return View(downloadFileVM);
-        }
-        public async Task<IActionResult> Delete()
-        {
-            string accessKey = Config.GetConnectionString("AccessKey");
-            BlobContainerClient container = new BlobContainerClient(accessKey, "petra-excel");
-
-            await foreach (var item in container.GetBlobsAsync(prefix: "downloads/"))
-                await container.DeleteBlobIfExistsAsync(item.Name);
-
-            return RedirectToAction("Index");
-        }
-
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -143,9 +113,7 @@ namespace PetraExcelUpload.Web.Controllers
                 }
 
                 UploadToBlobStorage("petra-excel", ViewModel.File.FileName + "x", filePath);
-
                 ForceExitExcel();
-                System.Threading.Thread.Sleep(5000); //? Ugly solution - Azure function doesnt finish before page reloads resulting in Downloads displaying no files uploaded.
             }
             else
             {
@@ -158,10 +126,9 @@ namespace PetraExcelUpload.Web.Controllers
                 }
 
                 UploadToBlobStorage("petra-excel", ViewModel.File.FileName, filePath);
-                System.Threading.Thread.Sleep(4000); //? Ugly solution - Azure function doesnt finish before page reloads resulting in Downloads displaying no files uploaded.
             }
-
-            return RedirectToAction("Download");
+            System.Threading.Thread.Sleep(8000); //? Ugly solution - Azure function doesnt finish before page reloads resulting in Downloads displaying no files uploaded.
+            return RedirectToAction("Index", "Download");
         }
 
         private void UploadToBlobStorage(string cntName, string fileName, string filePath)
