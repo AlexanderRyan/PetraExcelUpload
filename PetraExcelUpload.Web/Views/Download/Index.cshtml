@@ -1,0 +1,26 @@
+﻿@model DownloadFileViewModel
+@{
+}
+
+<h1>Uploaded files</h1>
+
+<div>
+    @if (Model.BlobFiles.Count() != 0)
+    {
+        <ul>
+            @foreach (var item in Model.BlobFiles)
+            {
+                <li class="text-left text-danger">
+                    <a href="@item.Url">@(item.File.Name.Remove(0, 10))</a>
+                </li>
+            }
+        </ul>
+        <form asp-action="Delete" method="post">
+            <button class="btn btn-sm btn-outline-warning" type="submit">Delete files</button>
+        </form>
+    }
+    else
+    {
+        <p>No files uploaded...</p>
+    }
+</div>
