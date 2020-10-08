@@ -7,7 +7,6 @@ namespace PetraExcelUpload.Web.Models
     {
         [Required]
         public IFormFile File { get; set; }
-        public int NrOfUpdatedRows { get; set; }
         public string Result { get; set; }
 
     }
